@@ -7,6 +7,10 @@ from typing import Iterable, NamedTuple, Optional
 if os.name == 'nt':
     from stat import FILE_ATTRIBUTE_HIDDEN, FILE_ATTRIBUTE_SYSTEM
 
+"""
+Works with Python 3.6+
+"""
+
 
 NotBackedUpReason = Enum('NotBackedUpReason',
                          'NO_REMOTE NOT_COMMITTED NOT_PUSHED')
@@ -136,7 +140,7 @@ def _all_code_comitted(repo_path: Path) -> bool:
     if process.returncode:
         return False
     else:
-        return process.stdout is not None and process.stdout.isspace()
+        return not process.stdout or process.stdout.isspace()
 
 
 def _list_remotes(repo_path: Path) -> Iterable[str]:
@@ -163,7 +167,7 @@ def _current_branch(repo_path: Path) -> Optional[str]:
     try:
         # Get the first string that starts with `*`
         current_branch = next(b for b in branches if b.startswith('*'))
-        return current_branch[1:].trim()  # Remove * character from string
+        return current_branch[1:].strip()  # Remove * character from string
     except StopIteration:
         return None
 
@@ -185,7 +189,7 @@ def _code_pushed_to(remote: str, repo: Path, branch: Optional[str]) -> bool:
     if process.returncode:
         return False
     else:
-        return process.stdout is not None and process.stdout.isspace()
+        return not process.stdout or process.stdout.isspace()
 
 
 if __name__ == '__main__':
