@@ -36,7 +36,7 @@ def backup_your_code(pattern: str = None, cwd: str = os.path.curdir) -> Iterable
     """Return iterable of paths that don't have code pushed to a git remote.
 
     Based on the input glob |pattern|, find folders and filter it to
-    only folders with either:
+    only folders with one of:
         - No git repository
         - No git remote
         - Code not pushed to a remote
@@ -90,7 +90,7 @@ def _all_git_repo_folders(root_path: str) -> Iterable[Path]:
         except StopIteration:
             return
         except FileNotFoundError:
-            continue  # Sometimes git_folders fails to open a directory
+            pass  # Sometimes git_folders fails to open a directory
 
 
 def _is_valid_folder(folder: Path) -> bool:
